@@ -1637,3 +1637,31 @@ button:focus-visible {
         transform: none;
     }
 }
+
+/* ASSINATURA DO DESENVOLVEDOR — AJUSTE FINAL */
+
+.assinatura-nome {
+    display: inline-block;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: normal;
+
+    color: rgba(196, 208, 229, 0.65);
+    white-space: nowrap;
+    text-decoration: none;
+
+    text-shadow: none;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.assinatura-nome:hover {
+    color: rgba(196, 208, 229, 0.65);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 600px) {
+    .assinatura-nome {
+        font-size: 12px;
+    }
+}
