@@ -1,0 +1,166 @@
+[1mdiff --git "a/img/Cau\303\252 2024.png" "b/img/Cau\303\252 2024.png"[m
+[1mnew file mode 100644[m
+[1mindex 0000000..22cbed3[m
+Binary files /dev/null and "b/img/Cau\303\252 2024.png" differ
+[1mdiff --git "a/img/Cau\303\252 2026.png" "b/img/Cau\303\252 2026.png"[m
+[1mnew file mode 100644[m
+[1mindex 0000000..f9728af[m
+Binary files /dev/null and "b/img/Cau\303\252 2026.png" differ
+[1mdiff --git a/img/Clara 2026.png b/img/Clara 2026.png[m
+[1mnew file mode 100644[m
+[1mindex 0000000..df9e7e3[m
+Binary files /dev/null and b/img/Clara 2026.png differ
+[1mdiff --git a/img/Duda 2026.png b/img/Duda 2026.png[m
+[1mnew file mode 100644[m
+[1mindex 0000000..a0d72a8[m
+Binary files /dev/null and b/img/Duda 2026.png differ
+[1mdiff --git "a/img/Jo\303\243o 2024.png" "b/img/Jo\303\243o 2024.png"[m
+[1mnew file mode 100644[m
+[1mindex 0000000..1891d54[m
+Binary files /dev/null and "b/img/Jo\303\243o 2024.png" differ
+[1mdiff --git "a/img/Jo\303\243o 2026.png" "b/img/Jo\303\243o 2026.png"[m
+[1mnew file mode 100644[m
+[1mindex 0000000..95d3266[m
+Binary files /dev/null and "b/img/Jo\303\243o 2026.png" differ
+[1mdiff --git a/img/Paladins 2024.jpeg b/img/Paladins 2024.jpeg[m
+[1mnew file mode 100644[m
+[1mindex 0000000..abf2aac[m
+Binary files /dev/null and b/img/Paladins 2024.jpeg differ
+[1mdiff --git a/img/Paladins 2026.jpeg b/img/Paladins 2026.jpeg[m
+[1mnew file mode 100644[m
+[1mindex 0000000..b0b0e12[m
+Binary files /dev/null and b/img/Paladins 2026.jpeg differ
+[1mdiff --git a/img/Pedro 2024.png b/img/Pedro 2024.png[m
+[1mnew file mode 100644[m
+[1mindex 0000000..104b71a[m
+Binary files /dev/null and b/img/Pedro 2024.png differ
+[1mdiff --git "a/img/Rob\303\264 estadual 2026.png" "b/img/Rob\303\264 estadual 2026.png"[m
+[1mnew file mode 100644[m
+[1mindex 0000000..c38f8f5[m
+Binary files /dev/null and "b/img/Rob\303\264 estadual 2026.png" differ
+[1mdiff --git "a/img/Rob\303\264 nacional 2026.png" "b/img/Rob\303\264 nacional 2026.png"[m
+[1mnew file mode 100644[m
+[1mindex 0000000..5208686[m
+Binary files /dev/null and "b/img/Rob\303\264 nacional 2026.png" differ
+[1mdiff --git "a/img/Rob\303\264 regional 2026.png" "b/img/Rob\303\264 regional 2026.png"[m
+[1mnew file mode 100644[m
+[1mindex 0000000..85f9d62[m
+Binary files /dev/null and "b/img/Rob\303\264 regional 2026.png" differ
+[1mdiff --git a/img/paladins_logo.png.png b/img/paladins_logo.png.png[m
+[1mnew file mode 100644[m
+[1mindex 0000000..8e3bc5f[m
+Binary files /dev/null and b/img/paladins_logo.png.png differ
+[1mdiff --git a/index.html b/index.html[m
+[1mnew file mode 100644[m
+[1mindex 0000000..4ca7f5b[m
+[1m--- /dev/null[m
+[1m+++ b/index.html[m
+[36m@@ -0,0 +1,845 @@[m
+[32m+[m
+[32m+[m[32m<!DOCTYPE html>[m
+[32m+[m[32m<html lang="pt-BR">[m
+[32m+[m
+[32m+[m[32m<head>[m
+[32m+[m[32m    <meta charset="UTF-8">[m
+[32m+[m[32m    <meta name="viewport" content="width=device-width, initial-scale=1.0">[m
+[32m+[m
+[32m+[m[32m    <meta name="description" content="Conheça a PALADINS, equipe de robótica do Colégio SESI de Apucarana, Paraná. Descubra nossa história, conquistas na Olimpíada Brasileira de Robótica (OBR), integrantes e evolução dos nossos robôs.">[m
+[32m+[m
+[32m+[m[32m    <meta name="keywords" content="PALADINS, equipe PALADINS, robótica, Colégio SESI, Apucarana, OBR, Olimpíada Brasileira de Robótica, robótica educacional, LEGO Spike Prime, LEGO Mindstorms EV3">[m
+[32m+[m
+[32m+[m[32m    <meta name="author" content="Equipe PALADINS">[m
+[32m+[m[32m    <meta name="robots" content="index, follow">[m
+[32m+[m[32m    <meta name="theme-color" content="#071A52">[m
+[32m+[m
+[32m+[m[32m    <meta property="og:type" content="website">[m
+[32m+[m[32m    <meta property="og:title" content="PALADINS | Equipe de Robótica do Colégio SESI">[m
+[32m+[m[32m    <meta property="og:description" content="Conheça a trajetória, os integrantes, os robôs e as conquistas da PALADINS na Olimpíada Brasileira de Robótica.">[m
+[32m+[m[32m    <meta property="og:locale" content="pt_BR">[m
+[32m+[m
+[32m+[m[32m    <title>PALADINS | Equipe de Robótica do Colégio SESI de Apucarana</title>[m
+[32m+[m
+[32m+[m[32m    <link rel="preconnect" href="https://fonts.googleapis.com">[m
+[32m+[m[32m    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>[m
+[32m+[m
+[32m+[m[32m    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">[m
+[32m+[m
+[32m+[m[32m    <link rel="stylesheet" href="./styles.css">[m
+[32m+[m[32m</head>[m
+[32m+[m
+[32m+[m[32m<body>[m
+[32m+[m
+[32m+[m[32m    <canvas id="fundo-interativo" aria-hidden="true"></canvas>[m
+[32m+[m
+[32m+[m[32m    <!-- CABEÇALHO -->[m
+[32m+[m
+[32m+[m[32m    <header id="inicio">[m
+[32m+[m
+[32m+[m[32m        <h1>PALADINS</h1>[m
+[32m+[m
+[32m+[m[32m        <img[m
+[32m+[m[32m            src="img/paladins_logo.png.png"[m
+[32m+[m[32m            alt="Logotipo oficial da equipe PALADINS de robótica do Colégio SESI"[m
+[32m+[m[32m            class="logo-equipe"[m
+[32m+[m[32m            fetchpriority="high"[m
+[32m+[m[32m        >[m
+[32m+[m
+[32m+[m[32m        <p>ROBÓTICA • COLÉGIO SESI • APUCARANA</p>[m
+[32m+[m
+[32m+[m[32m        <nav aria-label="Navegação principal">[m
+[32m+[m[32m            <ul>[m
+[32m+[m[32m                <li><a href="#inicio">Início</a></li>[m
+[32m+[m[32m                <li><a href="#obr">O que é a OBR?</a></li>[m
+[32m+[m[32m                <li><a href="#temporada-2024">Temporada 2024</a></li>[m
+[32m+[m[32m                <li><a href="#temporada-2026">Temporada 2026</a></li>[m
+[32m+[m[32m                <li><a href="#robo">Nossos Robôs</a></li>[m
+[32m+[m[32m                <li><a href="#depoimentos">OBR para nós</a></li>[m
+[32m+[m[32m                <li><a href="#nos-acompanhe">Nos acompanhe</a></li>[m
+[32m+[m[32m            </ul>[m
+[32m+[m[32m        </nav>[m
+[32m+[m
+[32m+[m[32m    </header>[m
+[32m+[m
+[32m+[m
+[32m+[m[32m    <!-- CONTEÚDO PRINCIPAL -->[m
+[32m+[m
+[32m+[m[32m    <main id="conteudo-principal">[m
+[32m+[m
+[32m+[m[32m        <!-- 1. APRESENTAÇÃO -->[m
+[32m+[m
+[32m+[m[32m        <section id="apresentacao" aria-labelledby="titulo-apresentacao">[m
+[32m+[m
+[32m+[m[32m            <h2 id="titulo-apresentacao">Quem Somos</h2>[m
+[32m+[m
+[32m+[m[32m            <p>[m
+[32m+[m[32m                Somos a PALADINS, a equipe de robótica mais antiga[m
+[32m+[m[32m                da modalidade OBR do Colégio SESI. Nossa trajetória[m
+[32m+[m[32m                é marcada pela dedicação, criatividade, inovação[m
+[32m+[m[32m                e paixão pela tecnologia.[m
+[32m+[m[32m            </p>[m
+[32m+[m
+[32m+[m[32m            <p>[m
+[32m+[m[32m                Ao longo dos anos, enfrentamos desafios, desenvolvemos[m
+[32m+[m[32m                soluções e conquistamos resultados importantes,[m
+[32m+[m[32m                sempre buscando evoluir como equipe e como competidores.[m
+[32m+[m[32m            </p>[m
+[32m+[m
+[32m+[m[32m        </section>[m
+[32m+[m
+[32m+[m
+[32m+[m[32m        <!-- 2. O QUE É A OBR? -->[m
+[32m+[m
+[32m+[m[32m        <section id="obr" aria-labelledby="titulo-obr">[m
+[32m+[m
+[32m+[m[32m            <h2 id="titulo-obr">O Que é a OBR?</h2>[m
+[32m+[m
+[32m+[m[32m            <p>[m
+[32m+[m[32m                A Olimpíada Brasileira de Robótica (OBR) é uma[m
+[32m+[m[32m                competição educacional que busca incentivar o[m
+[32m+[m[32m                interesse dos estudantes pela ciência, tecnologia[m
+[32m+[m[32m                e engenharia por meio da robótica.[m
+[32m+[m[32m            </p>[m
+[32m+[m
+[32m+[m[32m            <p>[m
+[32m+[m[32m                Na modalidade prática, as equipes devem construir[m
+[32m+[m[32m                e programar robôs autônomos capazes de percorrer[m
+[32m+[m[32m                uma arena, seguir trajetos, superar obstáculos[m
