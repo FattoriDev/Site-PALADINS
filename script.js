@@ -65,7 +65,7 @@ if (!movimentoReduzido.matches) {
 
 
 /* ==================================================
-   2. MALHA DIGITAL INTERATIVA
+   2. FUNDO EM ONDA
 ================================================== */
 
 const canvas = document.getElementById("fundo-interativo");
@@ -74,437 +74,237 @@ if (canvas && canvas.getContext) {
 
     const ctx = canvas.getContext("2d");
 
+    // Canvas pequeno onde a onda é calculada (depois é ampliado)
+    const pequeno = document.createElement("canvas");
+    const pctx = pequeno.getContext("2d");
+
     let largura = 0;
     let altura = 0;
+    let imagem = null;
 
-    let pontos = [];
+    const mouse = {
+        x: 0.5,
+        y: 0.5,
+        alvoX: 0.5,
+        alvoY: 0.5,
+        presenca: 0,
+        alvoPresenca: 0
+    };
+
     let tempo = 0;
     let quadroAnterior = 0;
     let animacaoAtiva = false;
 
-    const espacamento = 95;
-    const distanciaConexao = 145;
+    /* ---------- AJUSTES (pode mexer à vontade) ---------- */
 
-    const velocidadeGeral = 0.35;
-    const intensidadeMovimento = 0.65;
+    // Tamanho do "pixel" da onda. Maior = mais pixelado e mais leve.
+    // Use 1 a 3 para uma onda bem lisa.
+    const tamanhoPixel = 7;
 
-    const mouse = {
-        x: -1000,
-        y: -1000,
-        raio: 220
-    };
+    // Velocidade da animação
+    const velocidade = 0.00012;
 
-    const forcaMouse = 15;
+    // Força das faixas de luz (0 a 1)
+    const intensidade = 0.9;
 
+    // Espessura das faixas: quanto MAIOR o número, mais FINA a faixa
+    const finuraAzul = 9;
+    const finuraDourado = 12;
 
-    // Nova paleta oficial PALADINS
-    const cores = {
+    // Brilho da onda na primeira tela e nas demais (0 a 1)
+    const brilhoPrimeiraTela = 0.65;
+    const brilhoDemaisTelas = 0.15;
 
-        azul: "18, 60, 186",
-        azulClaro: "22, 139, 255",
-        dourado: "255, 184, 0",
-        amarelo: "255, 210, 28",
-        branco: "245, 247, 255"
+    // Quanto as ondas acompanham o mouse
+    const forcaMouse = 0.5;   // deformação das faixas (0 = desligado)
+    const raioMouse = 0.5;    // alcance do efeito (maior = mais espalhado e suave)
+    const suavidadeMouse = 0.02; // menor = segue mais devagar
+    const velocidadeMaxMouse = 0.008; // limite de velocidade: evita bolha ao mexer rápido
 
-    };
+    // Cores (R, G, B)
+    const corAzul = [20, 90, 235];
+    const corAzulClaro = [30, 150, 255];
+    const corDourado = [255, 195, 0];
 
+    /* ---------------------------------------------------- */
 
-    /* ------------------------------------------
-       AJUSTAR CANVAS
-    ------------------------------------------ */
 
     function ajustarCanvas() {
-
-        const proporcao = Math.min(
-            window.devicePixelRatio || 1,
-            2
-        );
 
         largura = window.innerWidth;
         altura = window.innerHeight;
 
-        canvas.width = largura * proporcao;
-        canvas.height = altura * proporcao;
+        canvas.width = largura;
+        canvas.height = altura;
 
-        canvas.style.width = `${largura}px`;
-        canvas.style.height = `${altura}px`;
+        pequeno.width = Math.ceil(largura / tamanhoPixel);
+        pequeno.height = Math.ceil(altura / tamanhoPixel);
 
-        ctx.setTransform(
-            proporcao,
-            0,
-            0,
-            proporcao,
-            0,
-            0
+        imagem = pctx.createImageData(pequeno.width, pequeno.height);
+    }
+
+
+    /* Onda mais forte na primeira tela e mais apagada nas outras */
+
+    function atualizarBrilho() {
+
+        const cabecalho = document.querySelector("header");
+
+        const limite = cabecalho
+            ? cabecalho.offsetHeight * 0.8
+            : altura;
+
+        const progresso = Math.min(
+            Math.max(window.scrollY / limite, 0),
+            1
         );
 
-        criarMalha();
+        const brilho =
+            brilhoPrimeiraTela -
+            (brilhoPrimeiraTela - brilhoDemaisTelas) * progresso;
+
+        canvas.style.opacity = brilho;
     }
 
 
-    /* ------------------------------------------
-       CRIAR PONTOS DA MALHA
-    ------------------------------------------ */
-
-    function criarMalha() {
-
-        pontos = [];
-
-        const colunas = Math.ceil(largura / espacamento) + 2;
-        const linhas = Math.ceil(altura / espacamento) + 2;
-
-        for (let y = -1; y < linhas; y++) {
-
-            for (let x = -1; x < colunas; x++) {
-
-                const origemX = x * espacamento;
-                const origemY = y * espacamento;
-
-                const sorteio = Math.random();
-
-                let cor;
-
-                if (sorteio > 0.94) {
-
-                    cor = cores.branco;
-
-                } else if (sorteio > 0.78) {
-
-                    cor = cores.amarelo;
-
-                } else if (sorteio > 0.55) {
-
-                    cor = cores.dourado;
-
-                } else if (sorteio > 0.30) {
-
-                    cor = cores.azulClaro;
-
-                } else {
-
-                    cor = cores.azul;
-                }
+    window.addEventListener("scroll", atualizarBrilho, {
+        passive: true
+    });
 
 
-                pontos.push({
+    function desenharOnda() {
 
-                    origemX,
-                    origemY,
+        const w = pequeno.width;
+        const h = pequeno.height;
+        const dados = imagem.data;
 
-                    x: origemX,
-                    y: origemY,
+        const t = tempo;
+        const proporcao = w / h;
 
-                    fase: Math.random() * Math.PI * 2,
+        const mx = mouse.x * proporcao;
+        const my = mouse.y;
+        const raio2 = raioMouse * raioMouse;
 
-                    velocidade: 0.5 + Math.random() * 0.35,
+        let i = 0;
 
-                    amplitude: 5 + Math.random() * 6,
+        for (let py = 0; py < h; py++) {
 
-                    tamanho: 1.2 + Math.random() * 1.2,
+            const v = py / h;
 
-                    cor
+            for (let px = 0; px < w; px++) {
 
-                });
+                const u = (px / w) * proporcao;
 
-            }
-        }
-    }
+                // Influência do mouse: forte perto dele, some com a distância
+                const dx = u - mx;
+                const dy = v - my;
 
+                const influencia =
+                    Math.exp(-(dx * dx + dy * dy) / raio2) *
+                    mouse.presenca;
 
-    /* ------------------------------------------
-       MOVIMENTO DOS PONTOS
-    ------------------------------------------ */
+                // Curvas que deformam as faixas, como uma onda
+                const curva =
+                    0.55 * Math.sin(v * 3.2 + t * 1.1) +
+                    0.35 * Math.sin(u * 2.4 - t * 0.8) +
+                    0.18 * Math.sin((u + v) * 5.5 + t * 1.6);
 
-    function movimentarPontos() {
+                // Faixas diagonais que se movem
+                const diagonal =
+                    u * 1.1 + v * 0.8 + curva +
+                    influencia * forcaMouse;
 
-        pontos.forEach((ponto) => {
-
-            const movimentoX = Math.sin(
-                tempo * 0.00012 * ponto.velocidade + ponto.fase
-            ) * ponto.amplitude * intensidadeMovimento;
-
-            const movimentoY = Math.cos(
-                tempo * 0.00010 * ponto.velocidade + ponto.fase
-            ) * ponto.amplitude * intensidadeMovimento;
-
-            const destinoPontoX = ponto.origemX + movimentoX;
-            const destinoPontoY = ponto.origemY + movimentoY;
-
-            ponto.x += (destinoPontoX - ponto.x) * 0.045;
-            ponto.y += (destinoPontoY - ponto.y) * 0.045;
-
-            const dx = ponto.x - mouse.x;
-            const dy = ponto.y - mouse.y;
-
-            const distancia = Math.hypot(dx, dy);
-
-            if (distancia < mouse.raio && distancia > 0) {
-
-                const forca = Math.pow(
-                    (mouse.raio - distancia) / mouse.raio,
-                    2
+                const faixa1 = Math.pow(
+                    0.5 + 0.5 * Math.sin(diagonal * 5.0 - t * 1.4),
+                    finuraAzul
                 );
 
-                ponto.x +=
-                    (dx / distancia) * forca * forcaMouse * 0.08;
+                const faixa2 = Math.pow(
+                    0.5 + 0.5 * Math.sin(diagonal * 3.1 + 1.7 - t * 0.9),
+                    finuraDourado
+                );
 
-                ponto.y +=
-                    (dy / distancia) * forca * forcaMouse * 0.08;
+                const brilho = faixa1 * intensidade;
+                const dourado = faixa2 * intensidade * 0.55;
 
+                const total = Math.min(brilho + dourado, 1);
+
+                // Mistura azul -> azul claro conforme o brilho, e dourado por cima
+                const mistura = faixa1 > 0.65 ? (faixa1 - 0.65) / 0.35 : 0;
+
+                const r =
+                    corAzul[0] * (1 - mistura) + corAzulClaro[0] * mistura;
+                const g =
+                    corAzul[1] * (1 - mistura) + corAzulClaro[1] * mistura;
+                const b =
+                    corAzul[2] * (1 - mistura) + corAzulClaro[2] * mistura;
+
+                // Escolhe azul OU dourado (sem misturar os dois,
+                // porque a mistura vira cinza)
+                const proporcaoDourado = dourado / (brilho + dourado + 0.0001);
+
+                let pesoDourado = (proporcaoDourado - 0.4) / 0.2;
+                pesoDourado = Math.min(Math.max(pesoDourado, 0), 1);
+
+                dados[i]     = r + (corDourado[0] - r) * pesoDourado;
+                dados[i + 1] = g + (corDourado[1] - g) * pesoDourado;
+                dados[i + 2] = b + (corDourado[2] - b) * pesoDourado;
+                dados[i + 3] = total * 255;
+
+                i += 4;
             }
+        }
 
-        });
+        pctx.putImageData(imagem, 0, 0);
+
+        ctx.clearRect(0, 0, largura, altura);
+
+        // Sem suavização = visual pixelado. Troque por true para ficar liso.
+        ctx.imageSmoothingEnabled = tamanhoPixel <= 2;
+
+        ctx.drawImage(pequeno, 0, 0, largura, altura);
     }
 
 
-    /* ------------------------------------------
-       DESENHAR CONEXÕES DA MALHA
-    ------------------------------------------ */
-
-    function desenharConexoes() {
-
-        const tamanhoGrade = Math.ceil(
-            distanciaConexao / espacamento
-        );
-
-        const grade = new Map();
-
-        pontos.forEach((ponto) => {
-
-            const coluna = Math.floor(ponto.x / espacamento);
-            const linha = Math.floor(ponto.y / espacamento);
-
-            const chave = `${coluna},${linha}`;
-
-            if (!grade.has(chave)) {
-                grade.set(chave, []);
-            }
-
-            grade.get(chave).push(ponto);
-
-        });
-
-
-        pontos.forEach((ponto) => {
-
-            const coluna = Math.floor(ponto.x / espacamento);
-            const linha = Math.floor(ponto.y / espacamento);
-
-            for (let y = -tamanhoGrade; y <= tamanhoGrade; y++) {
-
-                for (let x = -tamanhoGrade; x <= tamanhoGrade; x++) {
-
-                    const chave = `${coluna + x},${linha + y}`;
-
-                    const vizinhos = grade.get(chave);
-
-                    if (!vizinhos) continue;
-
-                    vizinhos.forEach((vizinho) => {
-
-                        if (vizinho === ponto) return;
-
-                        const dx = ponto.x - vizinho.x;
-                        const dy = ponto.y - vizinho.y;
-
-                        const distancia = Math.hypot(dx, dy);
-
-                        const ordemCorreta =
-                            vizinho.origemY > ponto.origemY ||
-                            (
-                                vizinho.origemY === ponto.origemY &&
-                                vizinho.origemX > ponto.origemX
-                            );
-
-                        if (
-                            distancia < distanciaConexao &&
-                            ordemCorreta
-                        ) {
-
-                            const intensidade =
-                                1 - distancia / distanciaConexao;
-
-                            const pertoDoMouse =
-                                Math.hypot(
-                                    ponto.x - mouse.x,
-                                    ponto.y - mouse.y
-                                ) < mouse.raio;
-
-                            const opacidade = pertoDoMouse
-                                ? intensidade * 0.48
-                                : intensidade * 0.24;
-
-                            const cor = ponto.cor;
-
-                            ctx.beginPath();
-
-                            ctx.moveTo(ponto.x, ponto.y);
-                            ctx.lineTo(vizinho.x, vizinho.y);
-
-                            ctx.strokeStyle =
-                                `rgba(${cor}, ${opacidade})`;
-
-                            ctx.lineWidth = 0.7;
-
-                            ctx.stroke();
-
-                        }
-
-                    });
-
-                }
-
-            }
-
-        });
-
-    }
-
-
-    /* ------------------------------------------
-       PONTOS LUMINOSOS
-    ------------------------------------------ */
-
-    function desenharPontos() {
-
-        pontos.forEach((ponto) => {
-
-            const distanciaMouse = Math.hypot(
-                ponto.x - mouse.x,
-                ponto.y - mouse.y
-            );
-
-            const pertoDoMouse = distanciaMouse < mouse.raio;
-
-            const tamanho = pertoDoMouse
-                ? ponto.tamanho * 1.35
-                : ponto.tamanho;
-
-            ctx.beginPath();
-
-            ctx.arc(
-                ponto.x,
-                ponto.y,
-                tamanho,
-                0,
-                Math.PI * 2
-            );
-
-            ctx.fillStyle = `rgba(${ponto.cor}, 0.9)`;
-
-            ctx.shadowBlur = pertoDoMouse ? 16 : 7;
-
-            ctx.shadowColor =
-                ponto.cor === cores.branco
-                    ? "#FFFFFF"
-                    : ponto.cor === cores.amarelo
-                        ? "#FFD21C"
-                        : ponto.cor === cores.dourado
-                            ? "#FFB800"
-                            : "#168BFF";
-
-            ctx.fill();
-
-        });
-
-        ctx.shadowBlur = 0;
-    }
-
-
-    /* ------------------------------------------
-       BRILHO AO REDOR DO MOUSE
-    ------------------------------------------ */
-
-    function desenharBrilhoMouse() {
-
-        if (mouse.x < 0 || mouse.y < 0) return;
-
-        const brilho = ctx.createRadialGradient(
-            mouse.x,
-            mouse.y,
-            0,
-            mouse.x,
-            mouse.y,
-            mouse.raio
-        );
-
-        brilho.addColorStop(
-            0,
-            "rgba(255, 210, 28, 0.12)"
-        );
-
-        brilho.addColorStop(
-            0.45,
-            "rgba(22, 139, 255, 0.07)"
-        );
-
-        brilho.addColorStop(
-            1,
-            "rgba(18, 60, 186, 0)"
-        );
-
-        ctx.beginPath();
-
-        ctx.arc(
-            mouse.x,
-            mouse.y,
-            mouse.raio,
-            0,
-            Math.PI * 2
-        );
-
-        ctx.fillStyle = brilho;
-        ctx.fill();
-    }
-
-
-    /* ------------------------------------------
-       ANIMAÇÃO PRINCIPAL
-    ------------------------------------------ */
-
-    function animarMalha(timestamp) {
+    function animarOnda(timestamp) {
 
         if (!animacaoAtiva) return;
 
         const delta = quadroAnterior
-            ? Math.min(timestamp - quadroAnterior, 32)
+            ? Math.min(timestamp - quadroAnterior, 50)
             : 16;
 
         quadroAnterior = timestamp;
 
-        tempo += delta * velocidadeGeral;
+        tempo += delta * velocidade * 3;
 
-        ctx.clearRect(0, 0, largura, altura);
+        // O mouse é seguido com suavidade
+        // Cada passo é limitado, então o efeito nunca "corre" atrás do mouse
+        const limitar = (valor) =>
+            Math.max(-velocidadeMaxMouse, Math.min(velocidadeMaxMouse, valor));
 
-        movimentarPontos();
+        mouse.x += limitar((mouse.alvoX - mouse.x) * suavidadeMouse);
+        mouse.y += limitar((mouse.alvoY - mouse.y) * suavidadeMouse);
+        mouse.presenca +=
+            (mouse.alvoPresenca - mouse.presenca) * suavidadeMouse;
 
-        desenharBrilhoMouse();
+        desenharOnda();
 
-        desenharConexoes();
-
-        desenharPontos();
-
-        requestAnimationFrame(animarMalha);
+        requestAnimationFrame(animarOnda);
     }
 
 
-    /* ------------------------------------------
-       CONTROLE DA ANIMAÇÃO
-    ------------------------------------------ */
-
     function iniciarAnimacao() {
 
-        if (
-            animacaoAtiva ||
-            movimentoReduzido.matches
-        ) return;
+        if (animacaoAtiva || movimentoReduzido.matches) return;
 
         animacaoAtiva = true;
         quadroAnterior = 0;
 
         ajustarCanvas();
+        atualizarBrilho();
 
-        requestAnimationFrame(animarMalha);
+        requestAnimationFrame(animarOnda);
     }
 
 
@@ -514,53 +314,40 @@ if (canvas && canvas.getContext) {
     }
 
 
-    /* ------------------------------------------
-       INTERAÇÃO COM O MOUSE
-    ------------------------------------------ */
+    function seguirPonteiro(x, y) {
+
+        mouse.alvoX = x / window.innerWidth;
+        mouse.alvoY = y / window.innerHeight;
+        mouse.alvoPresenca = 1;
+    }
 
     window.addEventListener("mousemove", (event) => {
 
-        mouse.x = event.clientX;
-        mouse.y = event.clientY;
+        seguirPonteiro(event.clientX, event.clientY);
 
     }, { passive: true });
 
-
     document.addEventListener("mouseleave", () => {
 
-        mouse.x = -1000;
-        mouse.y = -1000;
-
+        mouse.alvoPresenca = 0;
     });
-
-
-    /* ------------------------------------------
-       SUPORTE PARA TOQUE
-    ------------------------------------------ */
 
     window.addEventListener("touchmove", (event) => {
 
         if (event.touches.length > 0) {
-
-            mouse.x = event.touches[0].clientX;
-            mouse.y = event.touches[0].clientY;
-
+            seguirPonteiro(
+                event.touches[0].clientX,
+                event.touches[0].clientY
+            );
         }
 
     }, { passive: true });
 
-
     window.addEventListener("touchend", () => {
 
-        mouse.x = -1000;
-        mouse.y = -1000;
-
+        mouse.alvoPresenca = 0;
     });
 
-
-    /* ------------------------------------------
-       REDIMENSIONAMENTO
-    ------------------------------------------ */
 
     window.addEventListener("resize", () => {
 
@@ -570,10 +357,6 @@ if (canvas && canvas.getContext) {
 
     });
 
-
-    /* ------------------------------------------
-       MOVIMENTO REDUZIDO
-    ------------------------------------------ */
 
     function atualizarMovimento() {
 
@@ -768,3 +551,31 @@ console.log(
 console.log(
     "Do Regional ao Estadual, e agora rumo ao Nacional!"
 );
+
+
+
+/* ==================================================
+   8. MENU HAMBÚRGUER
+================================================== */
+
+const botaoMenu = document.getElementById("menu-toggle");
+const overlayMenu = document.getElementById("menu-overlay");
+
+function alternarMenu(abrir) {
+    document.body.classList.toggle("menu-aberto", abrir);
+    botaoMenu.setAttribute("aria-expanded", abrir);
+}
+
+botaoMenu.addEventListener("click", () => {
+    alternarMenu(!document.body.classList.contains("menu-aberto"));
+});
+
+overlayMenu.addEventListener("click", () => alternarMenu(false));
+
+document.querySelectorAll("#menu-lateral a").forEach((link) => {
+    link.addEventListener("click", () => alternarMenu(false));
+});
+
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") alternarMenu(false);
+});
