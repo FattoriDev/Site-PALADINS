@@ -51,6 +51,27 @@
 
   <body>
     <canvas id="fundo-interativo" aria-hidden="true"></canvas>
+    <div class="topbar">
+  <button class="menu-toggle" id="menu-toggle" type="button"
+    aria-label="Abrir menu" aria-expanded="false" aria-controls="menu-lateral">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+</div>
+
+<div class="menu-overlay" id="menu-overlay"></div>
+
+<nav class="menu-lateral" id="menu-lateral" aria-label="Menu">
+  <div class="menu-cabecalho">MENU</div>
+  <a href="#inicio">Início</a>
+  <a href="#apresentacao">Quem Somos</a>
+  <a href="#obr">O que é a OBR?</a>
+  <a href="#temporada-2024">Temporada 2024</a>
+  <a href="#temporada-2026">Temporada 2026</a>
+  <a href="#robo">Nossos Robôs</a>
+  <a href="#depoimentos">OBR para nós</a>
+</nav>
 
     <!-- CABEÇALHO -->
 
@@ -613,98 +634,53 @@
       </section>
     </main>
 
-    <!-- RODAPÉ ORGANIZADO -->
+    <!-- RODAPÉ -->
 
-    <footer class="rodape">
-      <div class="rodape-conteudo">
-        <!-- COLUNA 1: IDENTIDADE -->
+<footer class="rodape">
+  <div class="rodape-conteudo">
+    <!-- IDENTIDADE -->
 
-        <div class="rodape-identidade">
-          <img
-            src="./img/paladins_logo.png.png"
-            alt="Logotipo da equipe PALADINS"
-            class="logo-rodape"
-            loading="lazy"
-          />
+    <div class="rodape-identidade">
+      <img
+        src="./img/paladins_logo.png.png"
+        alt="Logotipo da equipe PALADINS"
+        class="logo-rodape"
+        loading="lazy"
+      />
 
-          <h2>PALADINS</h2>
+      <h2>PALADINS</h2>
 
-          <p>
-            Tecnologia, inovação e trabalho em equipe. Representando o Colégio
-            SESI de Apucarana na Olimpíada Brasileira de Robótica.
-          </p>
+      <p>
+        Tecnologia, inovação e trabalho em equipe. Representando o Colégio
+        SESI de Apucarana na Olimpíada Brasileira de Robótica.
+      </p>
 
-          <span class="rodape-localizacao"> APUCARANA • PARANÁ • BRASIL </span>
-        </div>
+      <span class="rodape-localizacao"> APUCARANA • PARANÁ • BRASIL </span>
+    </div>
+  </div>
 
-        <!-- COLUNA 2: NAVEGAÇÃO -->
+  <!-- DIVISÃO INFERIOR -->
 
-        <nav class="rodape-links" aria-label="Navegação do rodapé">
-          <h3>NAVEGAÇÃO</h3>
+  <div class="rodape-inferior">
+    <p class="rodape-direitos">
+      © 2026 PALADINS. Todos os direitos reservados.
+    </p>
 
-          <a href="#inicio">Início</a>
+    <!-- ASSINATURA DO DESENVOLVEDOR -->
 
-          <a href="#apresentacao">Quem Somos</a>
-
-          <a href="#obr">O que é a OBR?</a>
-
-          <a href="#temporada-2024">Temporada 2024</a>
-
-          <a href="#temporada-2026">Temporada 2026</a>
-
-          <a href="#robo">Nossos Robôs</a>
-
-          <a href="#depoimentos">OBR para nós</a>
-        </nav>
-
-        <!-- COLUNA 3: CONTATO -->
-
-        <div class="rodape-redes" id="nos-acompanhe">
-          <h3>ACOMPANHE A EQUIPE</h3>
-
-          <p>
-            Faça parte da nossa trajetória. Acompanhe nossos projetos, desafios
-            e conquistas.
-          </p>
-
-          <a
-            href="https://www.instagram.com/paladins_obr/"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="botao-instagram-rodape"
-            aria-label="Acessar o Instagram da equipe PALADINS"
-          >
-            <span>Instagram da PALADINS</span>
-            <span aria-hidden="true">↗</span>
-          </a>
-
-          <a href="#contato"> Entre em contato </a>
-        </div>
-      </div>
-
-      <!-- DIVISÃO INFERIOR -->
-
-      <div class="rodape-inferior">
-        <p class="rodape-direitos">
-          © 2026 PALADINS. Todos os direitos reservados.
-        </p>
-
-        <!-- ASSINATURA DO DESENVOLVEDOR -->
-
-        <div class="assinatura">
-    <span class="assinatura-titulo">PROJETADO E DESENVOLVIDO POR</span>
-    <a
+    <address class="assinatura">
+      <span class="assinatura-titulo">PROJETADO E DESENVOLVIDO POR</span>
+      <a
         href="https://github.com/FattoriDev"
         class="assinatura-nome"
         target="_blank"
-        rel="GitHub do desenvolvedor João Pedro Fattori Janisch"
-    >
+        rel="noopener noreferrer"
+      >
         João Pedro Fattori Janisch
-    </a>
-</div>
-      </div>
-    </footer>
-
+      </a>
+    </address>
+  </div>
+</footer>
     <!-- JAVASCRIPT -->
 
     <script src="./script.js"></script>
