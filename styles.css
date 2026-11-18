@@ -1665,3 +1665,189 @@ button:focus-visible {
         font-size: 12px;
     }
 }
+
+/* =========================================
+   MENU HAMBÚRGUER — TODAS AS TELAS
+========================================= */
+
+.topbar {
+    width: 100%;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Botão hambúrguer */
+.menu-toggle {
+    width: 58px;
+    height: 58px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 7px;
+
+    background: rgba(2, 8, 23, 0.35);
+    border: 1px solid rgba(141, 187, 255, 0.45);
+    cursor: pointer;
+    z-index: 22;
+    transition: 0.3s ease;
+}
+
+.menu-toggle:hover {
+    border-color: var(--amarelo);
+    box-shadow: 0 0 18px rgba(255, 213, 0, 0.2);
+}
+
+.menu-toggle span {
+    width: 25px;
+    height: 2px;
+    background: var(--branco);
+    transition: 0.3s ease;
+}
+
+/* Transformação em X */
+.menu-aberto .menu-toggle span:first-child {
+    transform: translateY(9px) rotate(45deg);
+}
+
+.menu-aberto .menu-toggle span:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-aberto .menu-toggle span:last-child {
+    transform: translateY(-9px) rotate(-45deg);
+}
+
+/* Fundo escurecido */
+.menu-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    background: rgba(0, 0, 0, 0.7);
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.35s ease;
+}
+
+/* Painel lateral */
+.menu-lateral {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 21;
+
+    width: min(390px, 88vw);
+    height: 100vh;
+    height: 100dvh;
+
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+
+    background: linear-gradient(
+        155deg,
+        rgba(6, 22, 56, 0.99),
+        rgba(2, 8, 23, 0.99)
+    );
+
+    border-left: 1px solid rgba(255, 213, 0, 0.4);
+    box-shadow: -20px 0 65px rgba(0, 0, 0, 0.5);
+
+    transform: translateX(105%);
+    visibility: hidden;
+
+    transition:
+        transform 0.38s ease,
+        visibility 0.38s ease;
+
+    overflow-y: auto;
+}
+
+/* Cabeçalho do painel */
+.menu-cabecalho {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding-bottom: 25px;
+    margin-bottom: 18px;
+
+    color: var(--amarelo);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 3px;
+
+    border-bottom: 1px solid rgba(141, 187, 255, 0.2);
+}
+
+.menu-fechar {
+    border: none;
+    background: none;
+    color: var(--branco);
+    font-size: 34px;
+    cursor: pointer;
+}
+
+/* Links */
+.menu-lateral > a {
+    display: block;
+    padding: 15px 2px;
+
+    color: var(--branco);
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+
+    border-bottom: 1px solid rgba(141, 187, 255, 0.12);
+    transition: 0.25s ease;
+}
+
+.menu-lateral > a:hover,
+.menu-lateral > a.link-ativo {
+    padding-left: 12px;
+    color: var(--amarelo);
+}
+
+/* Menu aberto */
+.menu-aberto .menu-overlay {
+    opacity: 1;
+    visibility: visible;
+}
+
+.menu-aberto .menu-lateral {
+    transform: translateX(0);
+    visibility: visible;
+}
+
+body.menu-aberto {
+    overflow: hidden;
+}
+
+/* Ajustes para telas pequenas */
+@media (max-width: 600px) {
+    .topbar {
+        min-height: 82px;
+    }
+
+    .menu-toggle {
+        width: 48px;
+        height: 48px;
+    }
+
+    .menu-lateral {
+        width: min(350px, 88vw);
+        padding: 25px;
+    }
+}
+
+/* Acessibilidade */
+@media (prefers-reduced-motion: reduce) {
+    .menu-lateral,
+    .menu-overlay,
+    .menu-toggle span {
+        transition: none;
+    }
+}
