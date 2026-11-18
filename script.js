@@ -1,124 +1,14 @@
-
 /* ==================================================
    PALADINS | ROBÓTICA COLÉGIO SESI
-   JAVASCRIPT — NOVO DESIGN
-   Identidade visual azul e dourado
+   JAVASCRIPT — IDENTIDADE VISUAL AZUL E DOURADO
 ================================================== */
 
 
 /* ==================================================
-   1. CONFIGURAÇÕES GERAIS
+   1. EFEITO CAMALEÃO — MOVIMENTO DO MOUSE
 ================================================== */
 
 const raiz = document.documentElement;
-
-const movimentoReduzido = window.matchMedia(
-    "(prefers-reduced-motion: reduce)"
-);
-
-
-/* ==================================================
-   2. MENU LATERAL
-================================================== */
-
-const botaoMenu = document.querySelector(".menu-toggle");
-const menuLateral = document.querySelector("#menu-lateral");
-const overlayMenu = document.querySelector(".menu-overlay");
-
-const linksMenuLateral = document.querySelectorAll(
-    "#menu-lateral a"
-);
-
-
-function abrirMenu() {
-
-    if (!botaoMenu || !menuLateral) return;
-
-    document.body.classList.add("menu-aberto");
-
-    botaoMenu.setAttribute("aria-expanded", "true");
-
-    menuLateral.setAttribute("aria-hidden", "false");
-
-    if (overlayMenu) {
-        overlayMenu.setAttribute("aria-hidden", "false");
-    }
-
-}
-
-
-function fecharMenu() {
-
-    if (!botaoMenu || !menuLateral) return;
-
-    document.body.classList.remove("menu-aberto");
-
-    botaoMenu.setAttribute("aria-expanded", "false");
-
-    menuLateral.setAttribute("aria-hidden", "true");
-
-    if (overlayMenu) {
-        overlayMenu.setAttribute("aria-hidden", "true");
-    }
-
-}
-
-
-if (botaoMenu && menuLateral) {
-
-    botaoMenu.addEventListener("click", () => {
-
-        const menuAberto =
-            document.body.classList.contains("menu-aberto");
-
-        if (menuAberto) {
-            fecharMenu();
-        } else {
-            abrirMenu();
-        }
-
-    });
-
-}
-
-
-if (overlayMenu) {
-
-    overlayMenu.addEventListener("click", fecharMenu);
-
-}
-
-
-linksMenuLateral.forEach((link) => {
-
-    link.addEventListener("click", fecharMenu);
-
-});
-
-
-document.addEventListener("keydown", (event) => {
-
-    if (event.key === "Escape") {
-        fecharMenu();
-    }
-
-});
-
-
-/* Fecha o menu caso a tela passe para o desktop */
-
-window.addEventListener("resize", () => {
-
-    if (window.innerWidth > 900) {
-        fecharMenu();
-    }
-
-});
-
-
-/* ==================================================
-   3. EFEITO CAMALEÃO — MOVIMENTO DO MOUSE
-================================================== */
 
 let posicaoX = 50;
 let posicaoY = 50;
@@ -129,69 +19,37 @@ let destinoY = 50;
 let corAtual = 215;
 let corDestino = 215;
 
-let animacaoCamaleaoAtiva = false;
+const movimentoReduzido = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+);
 
 
 function atualizarMouse(event) {
 
     destinoX = (event.clientX / window.innerWidth) * 100;
-
     destinoY = (event.clientY / window.innerHeight) * 100;
 
     const progresso = destinoX / 100;
 
     // Variação entre azul e dourado
     corDestino = 215 - progresso * 170;
-
 }
 
 
 function animarCamaleao() {
 
-    if (
-        movimentoReduzido.matches ||
-        !animacaoCamaleaoAtiva
-    ) {
-        return;
-    }
+    if (movimentoReduzido.matches) return;
 
     posicaoX += (destinoX - posicaoX) * 0.045;
-
     posicaoY += (destinoY - posicaoY) * 0.045;
 
     corAtual += (corDestino - corAtual) * 0.035;
 
     raiz.style.setProperty("--mouse-x", `${posicaoX}%`);
-
     raiz.style.setProperty("--mouse-y", `${posicaoY}%`);
-
     raiz.style.setProperty("--cor-camaleao", `${corAtual}deg`);
 
     requestAnimationFrame(animarCamaleao);
-
-}
-
-
-function iniciarCamaleao() {
-
-    if (
-        animacaoCamaleaoAtiva ||
-        movimentoReduzido.matches
-    ) {
-        return;
-    }
-
-    animacaoCamaleaoAtiva = true;
-
-    requestAnimationFrame(animarCamaleao);
-
-}
-
-
-function pararCamaleao() {
-
-    animacaoCamaleaoAtiva = false;
-
 }
 
 
@@ -200,11 +58,14 @@ window.addEventListener("mousemove", atualizarMouse, {
 });
 
 
-iniciarCamaleao();
+if (!movimentoReduzido.matches) {
+    requestAnimationFrame(animarCamaleao);
+}
+
 
 
 /* ==================================================
-   4. MALHA DIGITAL INTERATIVA
+   2. MALHA DIGITAL INTERATIVA
 ================================================== */
 
 const canvas = document.getElementById("fundo-interativo");
@@ -217,19 +78,14 @@ if (canvas && canvas.getContext) {
     let altura = 0;
 
     let pontos = [];
-
     let tempo = 0;
-
     let quadroAnterior = 0;
-
     let animacaoAtiva = false;
 
     const espacamento = 95;
-
     const distanciaConexao = 145;
 
     const velocidadeGeral = 0.35;
-
     const intensidadeMovimento = 0.65;
 
     const mouse = {
@@ -241,17 +97,13 @@ if (canvas && canvas.getContext) {
     const forcaMouse = 15;
 
 
-    // Paleta oficial PALADINS
+    // Nova paleta oficial PALADINS
     const cores = {
 
         azul: "18, 60, 186",
-
         azulClaro: "22, 139, 255",
-
         dourado: "255, 184, 0",
-
         amarelo: "255, 210, 28",
-
         branco: "245, 247, 255"
 
     };
@@ -269,15 +121,12 @@ if (canvas && canvas.getContext) {
         );
 
         largura = window.innerWidth;
-
         altura = window.innerHeight;
 
         canvas.width = largura * proporcao;
-
         canvas.height = altura * proporcao;
 
         canvas.style.width = `${largura}px`;
-
         canvas.style.height = `${altura}px`;
 
         ctx.setTransform(
@@ -290,7 +139,6 @@ if (canvas && canvas.getContext) {
         );
 
         criarMalha();
-
     }
 
 
@@ -303,7 +151,6 @@ if (canvas && canvas.getContext) {
         pontos = [];
 
         const colunas = Math.ceil(largura / espacamento) + 2;
-
         const linhas = Math.ceil(altura / espacamento) + 2;
 
         for (let y = -1; y < linhas; y++) {
@@ -311,7 +158,6 @@ if (canvas && canvas.getContext) {
             for (let x = -1; x < colunas; x++) {
 
                 const origemX = x * espacamento;
-
                 const origemY = y * espacamento;
 
                 const sorteio = Math.random();
@@ -337,17 +183,15 @@ if (canvas && canvas.getContext) {
                 } else {
 
                     cor = cores.azul;
-
                 }
+
 
                 pontos.push({
 
                     origemX,
-
                     origemY,
 
                     x: origemX,
-
                     y: origemY,
 
                     fase: Math.random() * Math.PI * 2,
@@ -363,9 +207,7 @@ if (canvas && canvas.getContext) {
                 });
 
             }
-
         }
-
     }
 
 
@@ -386,15 +228,12 @@ if (canvas && canvas.getContext) {
             ) * ponto.amplitude * intensidadeMovimento;
 
             const destinoPontoX = ponto.origemX + movimentoX;
-
             const destinoPontoY = ponto.origemY + movimentoY;
 
             ponto.x += (destinoPontoX - ponto.x) * 0.045;
-
             ponto.y += (destinoPontoY - ponto.y) * 0.045;
 
             const dx = ponto.x - mouse.x;
-
             const dy = ponto.y - mouse.y;
 
             const distancia = Math.hypot(dx, dy);
@@ -415,7 +254,6 @@ if (canvas && canvas.getContext) {
             }
 
         });
-
     }
 
 
@@ -434,7 +272,6 @@ if (canvas && canvas.getContext) {
         pontos.forEach((ponto) => {
 
             const coluna = Math.floor(ponto.x / espacamento);
-
             const linha = Math.floor(ponto.y / espacamento);
 
             const chave = `${coluna},${linha}`;
@@ -451,7 +288,6 @@ if (canvas && canvas.getContext) {
         pontos.forEach((ponto) => {
 
             const coluna = Math.floor(ponto.x / espacamento);
-
             const linha = Math.floor(ponto.y / espacamento);
 
             for (let y = -tamanhoGrade; y <= tamanhoGrade; y++) {
@@ -469,7 +305,6 @@ if (canvas && canvas.getContext) {
                         if (vizinho === ponto) return;
 
                         const dx = ponto.x - vizinho.x;
-
                         const dy = ponto.y - vizinho.y;
 
                         const distancia = Math.hypot(dx, dy);
@@ -499,14 +334,15 @@ if (canvas && canvas.getContext) {
                                 ? intensidade * 0.48
                                 : intensidade * 0.24;
 
+                            const cor = ponto.cor;
+
                             ctx.beginPath();
 
                             ctx.moveTo(ponto.x, ponto.y);
-
                             ctx.lineTo(vizinho.x, vizinho.y);
 
                             ctx.strokeStyle =
-                                `rgba(${ponto.cor}, ${opacidade})`;
+                                `rgba(${cor}, ${opacidade})`;
 
                             ctx.lineWidth = 0.7;
 
@@ -572,7 +408,6 @@ if (canvas && canvas.getContext) {
         });
 
         ctx.shadowBlur = 0;
-
     }
 
 
@@ -619,9 +454,7 @@ if (canvas && canvas.getContext) {
         );
 
         ctx.fillStyle = brilho;
-
         ctx.fill();
-
     }
 
 
@@ -652,12 +485,11 @@ if (canvas && canvas.getContext) {
         desenharPontos();
 
         requestAnimationFrame(animarMalha);
-
     }
 
 
     /* ------------------------------------------
-       INICIAR ANIMAÇÃO
+       CONTROLE DA ANIMAÇÃO
     ------------------------------------------ */
 
     function iniciarAnimacao() {
@@ -665,31 +497,20 @@ if (canvas && canvas.getContext) {
         if (
             animacaoAtiva ||
             movimentoReduzido.matches
-        ) {
-            return;
-        }
+        ) return;
 
         animacaoAtiva = true;
-
         quadroAnterior = 0;
 
         ajustarCanvas();
 
         requestAnimationFrame(animarMalha);
-
     }
 
-
-    /* ------------------------------------------
-       PARAR ANIMAÇÃO
-    ------------------------------------------ */
 
     function pararAnimacao() {
 
         animacaoAtiva = false;
-
-        ctx.clearRect(0, 0, largura, altura);
-
     }
 
 
@@ -700,7 +521,6 @@ if (canvas && canvas.getContext) {
     window.addEventListener("mousemove", (event) => {
 
         mouse.x = event.clientX;
-
         mouse.y = event.clientY;
 
     }, { passive: true });
@@ -709,7 +529,6 @@ if (canvas && canvas.getContext) {
     document.addEventListener("mouseleave", () => {
 
         mouse.x = -1000;
-
         mouse.y = -1000;
 
     });
@@ -724,7 +543,6 @@ if (canvas && canvas.getContext) {
         if (event.touches.length > 0) {
 
             mouse.x = event.touches[0].clientX;
-
             mouse.y = event.touches[0].clientY;
 
         }
@@ -735,7 +553,6 @@ if (canvas && canvas.getContext) {
     window.addEventListener("touchend", () => {
 
         mouse.x = -1000;
-
         mouse.y = -1000;
 
     });
@@ -763,21 +580,14 @@ if (canvas && canvas.getContext) {
         if (movimentoReduzido.matches) {
 
             pararAnimacao();
-
             canvas.style.display = "none";
-
-            pararCamaleao();
 
         } else {
 
             canvas.style.display = "block";
-
             iniciarAnimacao();
 
-            iniciarCamaleao();
-
         }
-
     }
 
 
@@ -791,8 +601,9 @@ if (canvas && canvas.getContext) {
 }
 
 
+
 /* ==================================================
-   5. ANIMAÇÃO AO ROLAR A PÁGINA
+   3. ANIMAÇÃO AO ROLAR A PÁGINA
 ================================================== */
 
 const elementosAnimados = document.querySelectorAll(
@@ -800,15 +611,7 @@ const elementosAnimados = document.querySelectorAll(
 );
 
 
-if (movimentoReduzido.matches) {
-
-    elementosAnimados.forEach((elemento) => {
-
-        elemento.classList.add("visible");
-
-    });
-
-} else if ("IntersectionObserver" in window) {
+if ("IntersectionObserver" in window) {
 
     const observador = new IntersectionObserver((entradas) => {
 
@@ -850,8 +653,9 @@ if (movimentoReduzido.matches) {
 }
 
 
+
 /* ==================================================
-   6. MENU DE NAVEGAÇÃO ATIVO
+   4. MENU DE NAVEGAÇÃO ATIVO
 ================================================== */
 
 const secoes = document.querySelectorAll(
@@ -912,8 +716,9 @@ if ("IntersectionObserver" in window) {
 }
 
 
+
 /* ==================================================
-   7. PROTEÇÃO PARA LINKS SEM DESTINO
+   5. PROTEÇÃO PARA LINKS SEM DESTINO
 ================================================== */
 
 document.querySelectorAll('a[href="#"]').forEach((link) => {
@@ -927,8 +732,9 @@ document.querySelectorAll('a[href="#"]').forEach((link) => {
 });
 
 
+
 /* ==================================================
-   8. ANO AUTOMÁTICO NO RODAPÉ
+   6. ANO AUTOMÁTICO NO RODAPÉ
 ================================================== */
 
 const rodape = document.querySelector("footer");
@@ -949,33 +755,9 @@ if (rodape) {
 }
 
 
-/* ==================================================
-   9. BOTÃO VOLTAR AO TOPO
-================================================== */
-
-const botaoTopo = document.querySelector("#voltar-topo");
-
-if (botaoTopo) {
-
-    botaoTopo.addEventListener("click", () => {
-
-        window.scrollTo({
-
-            top: 0,
-
-            behavior: movimentoReduzido.matches
-                ? "auto"
-                : "smooth"
-
-        });
-
-    });
-
-}
-
 
 /* ==================================================
-   10. MENSAGEM NO CONSOLE
+   7. MENSAGEM NO CONSOLE
 ================================================== */
 
 console.log(
