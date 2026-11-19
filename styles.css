@@ -48,7 +48,9 @@ html {
     scroll-behavior: smooth;
     scroll-padding-top: 110px;
 }
-
+html {
+    overflow-x: clip;
+}
 body {
     font-family: 'Montserrat', sans-serif;
     background: var(--azul-escuro);
@@ -89,111 +91,6 @@ body::before {
         );
 }
 
-
-/* =========================================
-   5. MALHA DIGITAL + MÚLTIPLAS LUZES
-========================================= */
-
-body::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-
-    background-image:
-        radial-gradient(circle 90px,
-            rgba(141, 187, 255, 0.35),
-            transparent 75%),
-
-        radial-gradient(circle 75px,
-            rgba(21, 87, 176, 0.35),
-            transparent 75%),
-
-        radial-gradient(circle 110px,
-            rgba(141, 187, 255, 0.25),
-            transparent 75%),
-
-        radial-gradient(circle 70px,
-            rgba(255, 213, 0, 0.20),
-            transparent 75%),
-
-        radial-gradient(circle 85px,
-            rgba(21, 87, 176, 0.30),
-            transparent 75%),
-
-        linear-gradient(
-            rgba(141, 187, 255, 0.035) 1px,
-            transparent 1px
-        ),
-
-        linear-gradient(
-            90deg,
-            rgba(141, 187, 255, 0.035) 1px,
-            transparent 1px
-        );
-
-    background-size:
-        200% 200%,
-        200% 200%,
-        200% 200%,
-        200% 200%,
-        200% 200%,
-        55px 55px,
-        55px 55px;
-
-    background-position:
-        0% 0%,
-        100% 100%,
-        50% 0%,
-        0% 100%,
-        100% 0%,
-        0 0,
-        0 0;
-
-    background-repeat:
-        no-repeat,
-        no-repeat,
-        no-repeat,
-        no-repeat,
-        no-repeat,
-        repeat,
-        repeat;
-
-    animation: luzMultiplas 35s ease-in-out infinite alternate;
-}
-
-@keyframes luzMultiplas {
-    0% {
-        background-position:
-            0% 0%, 100% 100%, 50% 0%,
-            0% 100%, 100% 0%, 0 0, 0 0;
-    }
-
-    25% {
-        background-position:
-            35% 25%, 70% 65%, 80% 30%,
-            25% 75%, 90% 45%, 0 0, 0 0;
-    }
-
-    50% {
-        background-position:
-            100% 50%, 0% 30%, 30% 100%,
-            80% 20%, 15% 80%, 0 0, 0 0;
-    }
-
-    75% {
-        background-position:
-            65% 100%, 40% 0%, 0% 50%,
-            100% 80%, 55% 20%, 0 0, 0 0;
-    }
-
-    100% {
-        background-position:
-            20% 70%, 100% 20%, 70% 60%,
-            40% 0%, 0% 100%, 0 0, 0 0;
-    }
-}
 
 
 /* =========================================
@@ -1884,9 +1781,7 @@ header .topbar {
 }
 
 /* Evita que o menu seja cortado pelo cabeçalho */
-header {
-    overflow: visible;
-}
+
 .topbar {
     position: fixed;
     top: 12px;
